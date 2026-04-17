@@ -1,0 +1,39 @@
+name: CI - Generate & Run NUnit Tests
+on:
+  push:
+    branches: [ "main", "ai-version-1", "ai-version-2", "ai-version-3"]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+jobs:
+  test-generation-and-execution:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install generator dependencies
+      run: pip install pyyaml
+    - name: Generate NUnit tests
+      run: python generator/gen_tests.py --config config.yaml
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: nunit-test-results
+        path: |
+          tests/**/TestResults/
+          tests/**/test-results.trx

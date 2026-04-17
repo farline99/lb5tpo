@@ -1,0 +1,167 @@
+{
+  "module": {
+    "name": "MathExpressionEvaluator",
+    "interface": "IMathExpressionEvaluator",
+    "implementation": "MathExpressionEvaluator"
+  },
+  "functional_requirements": [
+    {
+      "id": "FR-1",
+      "desc": "Evaluate binary arithmetic expressions containing numeric operands and +, -, *, / operators."
+    },
+    {
+      "id": "FR-2",
+      "desc": "Apply multiplication and division before addition and subtraction."
+    },
+    {
+      "id": "FR-3",
+      "desc": "Ignore ASCII spaces around operands and operators."
+    },
+    {
+      "id": "FR-4",
+      "desc": "Reject null, empty, malformed, or unsupported expressions with ArgumentException."
+    },
+    {
+      "id": "FR-5",
+      "desc": "Reject division by zero with DivideByZeroException."
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "NFR-1",
+      "desc": "Evaluation is deterministic for the same input expression."
+    },
+    {
+      "id": "NFR-2",
+      "desc": "Decimal numbers use invariant-culture dot notation."
+    },
+    {
+      "id": "NFR-3",
+      "desc": "Evaluation is stateless and does not retain data between calls."
+    }
+  ],
+  "methods": [
+    {
+      "name": "Evaluate",
+      "signature": "double Evaluate(string expression)",
+      "req_functional": ["FR-1", "FR-2", "FR-3", "FR-4", "FR-5"],
+      "req_non_functional": ["NFR-1", "NFR-2", "NFR-3"],
+      "pre": "expression is not null or whitespace and contains only numeric operands with supported operators",
+      "post": "returns the arithmetic result or throws the documented exception",
+      "equivalence_classes": [
+        {
+          "id": "EC-1",
+          "case": "Addition",
+          "inputs": ["2+2"],
+          "assertion": "returns",
+          "expected": 4.0,
+          "requirements": ["FR-1", "NFR-1"]
+        },
+        {
+          "id": "EC-2",
+          "case": "Subtraction",
+          "inputs": ["10-3"],
+          "assertion": "returns",
+          "expected": 7.0,
+          "requirements": ["FR-1", "NFR-1"]
+        },
+        {
+          "id": "EC-3",
+          "case": "Multiplication",
+          "inputs": ["4*5"],
+          "assertion": "returns",
+          "expected": 20.0,
+          "requirements": ["FR-1", "NFR-1"]
+        },
+        {
+          "id": "EC-4",
+          "case": "Division",
+          "inputs": ["10/2"],
+          "assertion": "returns",
+          "expected": 5.0,
+          "requirements": ["FR-1", "NFR-1"]
+        },
+        {
+          "id": "EC-5",
+          "case": "Operator precedence",
+          "inputs": ["2+3*4"],
+          "assertion": "returns",
+          "expected": 14.0,
+          "requirements": ["FR-2"]
+        },
+        {
+          "id": "EC-6",
+          "case": "Mixed precedence",
+          "inputs": ["10-8/2"],
+          "assertion": "returns",
+          "expected": 6.0,
+          "requirements": ["FR-2"]
+        },
+        {
+          "id": "EC-7",
+          "case": "ASCII spaces",
+          "inputs": [" 6 / 3 + 2 "],
+          "assertion": "returns",
+          "expected": 4.0,
+          "requirements": ["FR-3"]
+        },
+        {
+          "id": "EC-8",
+          "case": "Decimal operands",
+          "inputs": ["1.5+2.25"],
+          "assertion": "returns",
+          "expected": 3.75,
+          "requirements": ["FR-1", "NFR-2"]
+        },
+        {
+          "id": "EC-9",
+          "case": "Null expression",
+          "inputs": [null],
+          "assertion": "throws",
+          "expected_exception": "ArgumentException",
+          "requirements": ["FR-4"]
+        },
+        {
+          "id": "EC-10",
+          "case": "Empty expression",
+          "inputs": [""],
+          "assertion": "throws",
+          "expected_exception": "ArgumentException",
+          "requirements": ["FR-4"]
+        },
+        {
+          "id": "EC-11",
+          "case": "Trailing operator",
+          "inputs": ["1+"],
+          "assertion": "throws",
+          "expected_exception": "ArgumentException",
+          "requirements": ["FR-4"]
+        },
+        {
+          "id": "EC-12",
+          "case": "Unsupported character",
+          "inputs": ["1+a"],
+          "assertion": "throws",
+          "expected_exception": "ArgumentException",
+          "requirements": ["FR-4"]
+        },
+        {
+          "id": "EC-13",
+          "case": "Invalid decimal separator",
+          "inputs": ["1,5+2"],
+          "assertion": "throws",
+          "expected_exception": "ArgumentException",
+          "requirements": ["FR-4", "NFR-2"]
+        },
+        {
+          "id": "EC-14",
+          "case": "Division by zero",
+          "inputs": ["10/0"],
+          "assertion": "throws",
+          "expected_exception": "DivideByZeroException",
+          "requirements": ["FR-5"]
+        }
+      ]
+    }
+  ]
+}

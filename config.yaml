@@ -1,0 +1,12 @@
+{
+  "target_language": "csharp",
+  "test_framework": "nunit",
+  "spec_path": "spec/math_expression_evaluator.yaml",
+  "output_dir": "tests/Module.Tests",
+  "namespace": "Module.Tests",
+  "interface_namespace": "Lab.Interfaces",
+  "interface_type": "IMathExpressionEvaluator",
+  "implementation_namespace": "Lab.Implementations.GenCode1",
+  "implementation_type": "MathExpressionEvaluator",
+  "generated_class_name": "MathExpressionEvaluatorGeneratedTests"
+}
